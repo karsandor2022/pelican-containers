@@ -1,6 +1,6 @@
 
 
-# ccarney16/pelican-containers
+# karsandor2022/pelican-containers
 
 Pelican, a free an open source agnostic game panel... In a Container!
 
