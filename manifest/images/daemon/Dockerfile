@@ -11,7 +11,7 @@ RUN \
   cd wings; \
   go build -ldflags="-s -w";
 
-FROM alpine:latest as final
+FROM alpine:latest AS final
 
 LABEL maintainer="Cameron Carney <ccarney16@live.com>"
 
