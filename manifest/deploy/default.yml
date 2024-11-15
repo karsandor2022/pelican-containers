@@ -25,19 +25,19 @@ services:
   cron:
     command: p:cron
     env_file: ./conf.d/panel.env
-    image: ccarney16/pelican-panel:${PANEL_VERSION:-latest}
+    image: thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
     profiles: [ panel ]
     restart: always
     volumes:
       - ./data/panel:/data
   ##
-  # -- Pterodactyl Daemon --
+  # -- Pelican Daemon --
   # This service provides the wings runtime.
   ##
   daemon:
     environment:
       - TZ=${DAEMON_TIMEZONE:-UTC}
-    image: docker.io/ccarney16/pelican-daemon:${DAEMON_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-daemon:${DAEMON_VERSION:-latest}
     ports:
       - 2022:2022
       - 8080:8080
@@ -69,12 +69,12 @@ services:
     volumes:
       - ./data/mysql:/var/lib/mysql
   ##
-  # -- Pterodactyl Panel --
+  # -- Pelican Panel --
   # This is the container that provides the main web interface.
   ##
   panel:
     env_file: ./conf.d/panel.env
-    image: docker.io/ccarney16/pelican-panel:${PANEL_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
     ports:
       - 80:80
       - 443:443
@@ -110,7 +110,7 @@ services:
   worker:
     command: p:worker
     env_file: ./conf.d/panel.env
-    image: docker.io/ccarney16/pelican-panel:${PANEL_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
     profiles: [ panel ]
     restart: always
     volumes:

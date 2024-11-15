@@ -23,7 +23,7 @@ services:
   daemon:
     environment:
       - TZ=${DAEMON_TIMEZONE:-UTC}
-    image: docker.io/ccarney16/pelican-daemon:${DAEMON_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-daemon:${DAEMON_VERSION:-latest}
     ports:
       - 2022:2022
       - 8080:8080
