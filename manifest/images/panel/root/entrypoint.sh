@@ -10,7 +10,7 @@ function start_server {
     # Create and set permissions for php session directory
     echo "[init] Creating PHP Cache Directories"
     mkdir -p /var/lib/caddy/php/{session,opcache,wsdlcache}
-    chmod 770 /var/lib/caddy/php/{session,opcache,wsdlcache}
+    chmod 755 /var/lib/caddy/php/{session,opcache,wsdlcache}
 
     # Allows this container to have extra functionality on init
     if [ -d /entrypoint.d ]; then
