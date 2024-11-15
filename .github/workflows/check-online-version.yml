@@ -16,12 +16,12 @@ jobs:
       latest_panel_version: ${{ steps.latest_versions.outputs.panel_version }}
       latest_daemon_version: ${{ steps.latest_versions.outputs.daemon_version}}
     steps:
-#    - name: Get Current Release
-#      id: latest_versions
-#      run: |
-#        latest_info="$(curl -s "https://cdn.pterodactyl.io/releases/latest.json")"
-#        echo "::set-output name=panel_version::v$(echo $latest_info | jq -r '.panel')"
-#        echo "::set-output name=daemon_version::v$(echo $latest_info | jq -r '.wings')"
+    - name: Get Current Release
+      id: latest_versions
+      run: |
+        latest_info="$(curl -s "https://cdn.pelican.dev/releases/latest.json")"
+        echo "::set-output name=panel_version::v$(echo $latest_info | jq -r '.panel')"
+        echo "::set-output name=daemon_version::v$(echo $latest_info | jq -r '.wings')"
                 
     - name: Get Panel Docker version
       uses: luoqiz/docker-images-latest-version@master
