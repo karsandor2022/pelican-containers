@@ -16,13 +16,13 @@ services:
       - ./conf.d/letsencrypt:/etc/letsencrypt
       - ./conf.d/letsencrypt/webroot/.well-known:/var/www/html/public/.well-known
   ##
-  # -- Pterodactyl Daemon --
+  # -- Pelican Daemon --
   # This service provides the wings runtime.
   ##
   daemon:
     environment:
       - TZ=${DAEMON_TIMEZONE:-UTC}
-    image: docker.io/ccarney16/pterodactyl-daemon:${DAEMON_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-daemon:${DAEMON_VERSION:-latest}
     ports:
       - 2022:2022
       - 8080:8080
@@ -30,10 +30,10 @@ services:
     profiles: [ daemon ]
     restart: always
     volumes:
-      - ${DAEMON_DATA_DIRECTORY:-/var/lib/pterodactyl}:${DAEMON_DATA_DIRECTORY:-/var/lib/pterodactyl}
+      - ${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}:${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}
       - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
-      - /tmp/pterodactyl/:/tmp/pterodactyl/
-      - ./conf.d/daemon:/etc/pterodactyl
+      - /tmp/pelican/:/tmp/pelican/
+      - ./conf.d/daemon:/etc/pelican
       - ./conf.d/letsencrypt:/etc/letsencrypt:ro
       - ./conf.d/certs:/etc/certs:ro
-    working_dir: ${DAEMON_DATA_DIRECTORY:-/var/lib/pterodactyl}
+    working_dir: ${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}
