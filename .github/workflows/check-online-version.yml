@@ -4,8 +4,8 @@ on:
   schedule:
   - cron: "0 0 * * *"
 env:
-  PANEL_PROJECT_NAME: pterodactyl-panel # Dockerhub project
-  DAEMON_PROJECT_NAME: pterodactyl-daemon
+  PANEL_PROJECT_NAME: pelican-panel # Dockerhub project
+  DAEMON_PROJECT_NAME: pelican-daemon
 jobs:
   get_versions:
     name: Get Versions
@@ -19,7 +19,7 @@ jobs:
     - name: Get Current Release
       id: latest_versions
       run: |
-        latest_info="$(curl -s "https://cdn.pterodactyl.io/releases/latest.json")"
+        #latest_info="$(curl -s "https://cdn.pelican.io/releases/latest.json")"
         echo "::set-output name=panel_version::v$(echo $latest_info | jq -r '.panel')"
         echo "::set-output name=daemon_version::v$(echo $latest_info | jq -r '.wings')"
                 
@@ -59,7 +59,7 @@ jobs:
     - uses: convictional/trigger-workflow-and-wait@v1.3.0
       with:
         owner: ${{ github.repository_owner }}
-        repo: pterodactyl-containers
+        repo: pelican-containers
         github_token: ${{ secrets.WORKFLOW_TOKEN }}
         workflow_file_name: update-daemon.yml
         ref: master
@@ -76,7 +76,7 @@ jobs:
     - uses: convictional/trigger-workflow-and-wait@v1.3.0
       with:
         owner: ${{ github.repository_owner }}
-        repo: pterodactyl-containers
+        repo: pelican-containers
         github_token: ${{ secrets.WORKFLOW_TOKEN }}
         workflow_file_name: update-panel.yml
         ref: master

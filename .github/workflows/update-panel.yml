@@ -3,7 +3,7 @@ name: Update Panel Image
 on:
   workflow_dispatch:
 env:
-    PANEL_PROJECT_NAME: pterodactyl-panel # Dockerhub project
+    PANEL_PROJECT_NAME: pelican-panel # Dockerhub project
 jobs:
   build_push_panel:
     name: Build and Push Panel Container

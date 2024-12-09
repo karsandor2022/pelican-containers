@@ -3,7 +3,7 @@ name: Update Wings Image
 on:
   workflow_dispatch:
 env:
-    DAEMON_PROJECT_NAME: pterodactyl-daemon
+    DAEMON_PROJECT_NAME: pelican-daemon
 jobs:
   build_push_wings:
     name: Build and Push Wings Container

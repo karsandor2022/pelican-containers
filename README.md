@@ -2,11 +2,11 @@
 
 # karsandor2022/pelican-containers
 
-Pelican, a free an open source agnostic game panel... In a Container!
+Pelican, a free an open source agnostic game panel... In a Container! (it is a fork of ccarney16/pterodactyl-containers)
 
 ## Installing
 
-Refer to the github wiki for the quick overview and detailed setup.
+(Soon)
 
 ## Contributing
 
