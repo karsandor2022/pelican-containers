@@ -1,0 +1,39 @@
+###
+# Daemon Configuration File
+#
+# This config only provides the daemon and certbot.
+# Meant for multi machine network where a panel is already established.
+###
+services:
+  ##
+  # -- Let's Encrypt Certbot --
+  ##
+  certbot:
+    command: renew
+    image: docker.io/certbot/certbot:latest
+    profiles: [ letsencrypt ]
+    volumes:
+      - ./conf.d/letsencrypt:/etc/letsencrypt
+      - ./conf.d/letsencrypt/webroot/.well-known:/var/www/html/public/.well-known
+  ##
+  # -- Pelican Daemon --
+  # This service provides the wings runtime.
+  ##
+  daemon:
+    environment:
+      - TZ=${DAEMON_TIMEZONE:-UTC}
+    image: docker.io/thecrafter22/pelican-daemon:${DAEMON_VERSION:-latest}
+    ports:
+      - 2022:2022
+      - 8080:8080
+    privileged: true
+    profiles: [ daemon ]
+    restart: always
+    volumes:
+      - ${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}:${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+      - /tmp/pelican/:/tmp/pelican/
+      - ./conf.d/daemon:/etc/pelican
+      - ./conf.d/letsencrypt:/etc/letsencrypt:ro
+      - ./conf.d/certs:/etc/certs:ro
+    working_dir: ${DAEMON_DATA_DIRECTORY:-/var/lib/pelican}
