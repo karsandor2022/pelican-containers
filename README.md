@@ -1,8 +1,8 @@
 
 
-# ccarney16/pterodactyl-containers
+# karsandor2022/pelican-containers
 
-Pterodactyl, a free an open source agnostic game panel... In a Container!
+Pelican, a free an open source agnostic game panel... In a Container!
 
 ## Installing
 
@@ -10,17 +10,17 @@ Refer to the github wiki for the quick overview and detailed setup.
 
 ## Contributing
 
-All issues regarding Pterodactyl Panel/Node are to be reported to https://github.com/Pterodactyl/Panel/issues.
+All issues regarding Pelican Panel/Node are to be reported to https://github.com/pelican-dev/Panel/issues.
 
 ## Useful Links
 
-*Pterodactyl Project*:
+*Pelican Project*:
 
-[https://pterodactyl.io/](https://pterodactyl.io/)
+[https://pelican.dev/](https://pelican.dev/)
 
-[https://docs.pterodactyl.io/](https://docs.pterodactyl.io/)
+[https://pelican.dev/docs/](https://pelican.dev/docs/)
 
-[https://github.com/Pterodactyl/](https://github.com/Pterodactyl/)
+[https://github.com/pelican-dev/](https://github.com/pelican-dev/)
 
 *Docker*:
 

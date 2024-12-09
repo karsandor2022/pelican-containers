@@ -1,10 +1,10 @@
-FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS base
+FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:10-kitten-minimal AS base
 
 LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
-ENV PHP_VERSION=8.2
-ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-zip,process,soap,sodium,xml,zstd
+ENV PHP_VERSION=8.3
+ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,zip,process,soap,sodium,xml,zstd,sqlite3,pdo
 ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
 # Create the Caddy group and user with ID 500
@@ -14,8 +14,8 @@ RUN microdnf install -y shadow-utils tzdata && \
     install -d -m 0750 -o caddy -g caddy /var/lib/caddy
 
 # Install any required dependencies for the container to operate
-RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
-    rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
+RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm && \
+    rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-9/group_caddy-caddy-epel-9.repo && \
     microdnf module enable -y php:remi-${PHP_VERSION} nodejs:20 && \
     eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
@@ -24,7 +24,8 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
     microdnf clean all && \
     pip3 cache purge
 
-# Copy contents to root directory
+
+#Copy contents to root directory
 COPY ./root/ /
 
 # Export a persistent volume for caddy to store persistent data
@@ -34,11 +35,12 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
+RUN chmod 755 /entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
 # Build phase of the container
-# This is where composer is added and pterodactyl properly setup
+# This is where composer is added and pelican properly setup
 FROM base AS build
 
 ARG VERSION
@@ -53,7 +55,7 @@ RUN \
     microdnf install -y findutils git yarnpkg
 
 RUN \
-    git clone https://github.com/pterodactyl/panel ./ --depth 1 --branch ${GIT_BRANCH} && \
+    git clone https://github.com/pelican-dev/panel ./ --depth 1 --branch ${GIT_BRANCH} && \
     rm .git -rf && \
     chmod -R 755 storage/* bootstrap/cache && \
     find storage -type d > .storage.tmpl && \
@@ -67,6 +69,7 @@ RUN \
     yarn add cross-env && \
     yarn run build:production && \
     rm -rf node_modules
+
 
 # Remove persistent data folders as they will be symlinked further down
 RUN rm .env ./storage -rf
@@ -83,6 +86,8 @@ COPY --from=build --chown=caddy:caddy /var/www /var/www
 # Symlink storage, config and cache to /data
 RUN \
     ln -s /data/storage storage; \
-    ln -s /data/pterodactyl.conf .env;
+    ln -s /data/pelican.conf .env; 
+    
+EXPOSE 80
 
 VOLUME [ "/data" ]
