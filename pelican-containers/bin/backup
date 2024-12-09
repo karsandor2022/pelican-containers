@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## 
-# Pterodactyl Backup Script
+# Pelican Backup Script
 #
 # This script runs a backup to the current directory.
 # Intended to work alongside another backup system (rsnapshot, borgbackup, etc...)
@@ -22,7 +22,7 @@ if ! [[ "$(docker-compose config --services)" =~ "panel" ]]; then
     exit
 fi
 
-printf "## Starting Pterodactyl Backup ##\n"
+printf "## Starting Pelican Backup ##\n"
 
 printf "Backing up Database\n"
 docker-compose run \
@@ -32,7 +32,7 @@ docker-compose run \
         mysqldump --user=\${DB_USERNAME} --password=\"\${DB_PASSWORD}\" --host=\${DB_HOST} --port=\${DB_PORT} --databases \${DB_DATABASE} > /backup/db-dump.sql" 
 
 printf "Backing up Configuration\n"
-cp -v data/panel/pterodactyl.conf "${workDir}/pterodactyl.conf"
+cp -v data/panel/pelican.conf "${workDir}/pelican.conf"
 cp -rv conf.d/ "${workDir}/conf.d"
 
 printf "## Backup Complete ##\n"
