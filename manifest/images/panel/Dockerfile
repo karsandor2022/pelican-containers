@@ -19,9 +19,8 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.n
     microdnf install -y python3 python3-pip  && \
     microdnf module enable -y php:remi-${PHP_VERSION} && \
     eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} && \
-    python3-pip install yacron && \
-    microdnf clean all && \
-    python3-pip cache purge
+    microdnf install -y yacron && \
+    microdnf clean all 
 
 
 #Copy contents to root directory
