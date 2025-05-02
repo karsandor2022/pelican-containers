@@ -18,7 +18,7 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.n
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
     microdnf module enable -y php:remi-${PHP_VERSION} && \
     eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} && \
-    microdnf install -y python39-pip && \
+    microdnf install -y python:latest && \
     pip3 install yacron && \
     microdnf clean all && \
     pip3 cache purge
