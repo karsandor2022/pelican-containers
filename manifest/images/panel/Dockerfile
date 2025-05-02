@@ -1,10 +1,11 @@
-FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:10-kitten-minimal AS base
+FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS base
 
 LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.3
-ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysql,opcache,zip,process,soap,sodium,xml,zstd,sqlite3,
+ENV PHP_MODULES=gb,mysql,mbstring,bcmath,xml,curl,zip,intl,sqlite3,fpm
+ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -13,14 +14,26 @@ RUN microdnf install -y shadow-utils tzdata && \
     install -d -m 0750 -o caddy -g caddy /var/lib/caddy
 
 # Install any required dependencies for the container to operate
-RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm && \
-    rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
-    curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
-    microdnf module enable -y php:remi-${PHP_VERSION} && \
-    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} && \
-    python3 python3-pip install yacron && \
+RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
+    rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
+    curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-9/group_caddy-caddy-epel-9.repo && \
+    microdnf module enable -y php:remi-${PHP_VERSION} nodejs:20 && \
+    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
+        python3 python3-pip tini ${EXTRA_PACKAGES} && \
+    pip3 install yacron && \
     microdnf clean all && \
-    python3 python3-pip cache purge
+    pip3 cache purge
+
+# Install sqlite3 from source as the version in the remi repo is outdated
+RUN microdnf install -y gcc make wget tar && \
+    cd /tmp && \
+    wget https://www.sqlite.org/2023/sqlite-autoconf-3490100.tar.gz && \
+    tar xzf sqlite-autoconf-3490100.tar.gz && \
+    cd sqlite-autoconf-3490100 && \
+    ./configure --prefix=/usr/local && \
+    make -j $(nproc) && \
+    make install && \
+    cd .. && rm -rf sqlite-autoconf-3490100*
 
 
 #Copy contents to root directory
