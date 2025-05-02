@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 PANEL_VERSION=v1.0.0-beta19
 DAEMON_VERSION=v1.0.0-beta11
+=======
+PANEL_VERSION=v
+DAEMON_VERSION=v
+>>>>>>> 3046a7c0bd668ee0e8c392cfd85faa0a84f1c7df
