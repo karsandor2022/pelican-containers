@@ -5,6 +5,7 @@ LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.3
 ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,zip,process,soap,sodium,xml,zstd,sqlite3,pdo
+ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -17,10 +18,11 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.n
     rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
     microdnf module enable -y php:remi-${PHP_VERSION} && \
-    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES}  && \
-    pip install yacron && \
+    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
+        python3 python3-pip tini ${EXTRA_PACKAGES} && \
+    python3-pip install yacron && \
     microdnf clean all && \
-    pip cache purge
+    python3-pip cache purge
 
 
 #Copy contents to root directory
