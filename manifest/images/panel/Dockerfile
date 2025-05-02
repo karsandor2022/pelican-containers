@@ -4,7 +4,8 @@ LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.4
-ENV PHP_MODULES=gd,mysql,mbstring,bcmath,xml,curl,zip,intl,sqlite3,fpm
+ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysql,opcache,zip,process,soap,sodium,xml,zstd,sqlite3,pdo
+ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -16,12 +17,13 @@ RUN microdnf install -y shadow-utils tzdata && \
 RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm && \
     rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
-    microdnf module enable -y php:remi-${PHP_VERSION} && \
-    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} && \
-    microdnf install -y python:latest && \
-    pip3 install yacron && \
+    microdnf module enable -y php:remi-${PHP_VERSION} nodejs:latest && \
+    microdnf install -y tini && \
+    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
+        python3 python3-pip tini ${EXTRA_PACKAGES} && \
+    python3 python3-pip install yacron && \
     microdnf clean all && \
-    pip3 cache purge
+    python3 python3-pip cache purge
 
 
 #Copy contents to root directory
@@ -60,7 +62,7 @@ RUN \
     find storage -type d > .storage.tmpl && \
     curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     cp .env.example .env && \
-    composer install --no-dev --optimize-autoloader && \
+    composer install --ansi --no-dev --optimize-autoloader && \
     chown -R caddy:caddy *;
 
 RUN \
