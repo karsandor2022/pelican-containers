@@ -3,9 +3,8 @@ FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:10-kitten-mini
 LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
-ENV PHP_VERSION=8.3
-ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,zip,process,soap,sodium,xml,zstd,sqlite3,pdo
-ENV EXTRA_PACKAGES="nmap-ncat mariadb"
+ENV PHP_VERSION=8.4
+ENV PHP_MODULES=gd,mysql,mbstring,bcmath,xml,curl,zip,intl,sqlite3,fpm
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
