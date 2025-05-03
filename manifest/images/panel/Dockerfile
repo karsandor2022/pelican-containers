@@ -40,7 +40,7 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
 
 #Copy contents to root directory
 COPY ./root/ /
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./root/entrypoint.sh /entrypoint.sh
 
 # Export a persistent volume for caddy to store persistent data
 VOLUME [ "/var/lib/caddy" ]
