@@ -4,7 +4,7 @@ LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.3
-ENV PHP_MODULES=gd,mysql,mbstring,bcmath,xml,curl,zip,intl,fpm
+ENV PHP_MODULES=gd,mysql,mbstring,bcmath,xml,curl,zip,intl,fpm,cli,common
 ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
 # Create the Caddy group and user with ID 500
@@ -62,7 +62,7 @@ RUN \
     rm .git -rf && \
     chmod -R 755 storage/* bootstrap/cache && \
     find storage -type d > .storage.tmpl && \
-    curl -sS https://getcomposer.org/installer | php8 -- --install-dir=/usr/local/bin --filename=composer && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
     cp .env.example .env && \
     composer install --no-dev --optimize-autoloader && \
     chown -R caddy:caddy *;
@@ -70,7 +70,6 @@ RUN \
 # Install sqlite3 from source as the version in the remi repo is outdated
 RUN microdnf install -y gcc make wget tar && \
     cd /tmp && \
-    wget https://www.sqlite.org/2025/sqlite-autoconf-3490100.tar.gz && \
     tar xzf sqlite-autoconf-3490100.tar.gz && \
     cd sqlite-autoconf-3490100 && \
     ./configure --prefix=/usr/local && \
