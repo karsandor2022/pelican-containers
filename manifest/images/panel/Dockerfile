@@ -13,6 +13,15 @@ RUN microdnf install -y shadow-utils tzdata && \
     useradd -r -g caddy -u 500 -d /var/lib/caddy -s /sbin/nologin -c 'Caddy web server' caddy && \
     install -d -m 0750 -o caddy -g caddy /var/lib/caddy
 
+# Install sqlite3 from source as the version in the remi repo is outdated
+RUN microdnf install -y gcc make wget tar && \
+    cd /tmp && \
+    tar xzf sqlite-autoconf-3490100.tar.gz && \
+    cd sqlite-autoconf-3490100 && \
+    ./configure --prefix=/usr/local && \
+    make -j $(nproc) && \
+    make install && \
+    cd .. && rm -rf sqlite-autoconf-3490100*
 
 
 # Install any required dependencies for the container to operate
@@ -67,15 +76,6 @@ RUN \
     composer install --no-dev --optimize-autoloader && \
     chown -R caddy:caddy *;
 
-# Install sqlite3 from source as the version in the remi repo is outdated
-RUN microdnf install -y gcc make wget tar && \
-    cd /tmp && \
-    tar xzf sqlite-autoconf-3490100.tar.gz && \
-    cd sqlite-autoconf-3490100 && \
-    ./configure --prefix=/usr/local && \
-    make -j $(nproc) && \
-    make install && \
-    cd .. && rm -rf sqlite-autoconf-3490100*
 
 RUN \
     yarn install --production && \
