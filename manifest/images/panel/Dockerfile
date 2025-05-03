@@ -48,8 +48,7 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
-RUN chmod 777 /entrypoint.sh
-RUN chmod 777 /usr/bin/tini
+RUN chmod 777 /
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
