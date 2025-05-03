@@ -3,7 +3,7 @@ FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS b
 LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
-ENV PHP_VERSION=8.4
+ENV PHP_VERSION=8.3
 ENV PHP_MODULES=gd,mysql,mbstring,bcmath,xml,curl,zip,intl,fpm
 ENV EXTRA_PACKAGES="nmap-ncat mariadb"
 
@@ -13,16 +13,6 @@ RUN microdnf install -y shadow-utils tzdata && \
     useradd -r -g caddy -u 500 -d /var/lib/caddy -s /sbin/nologin -c 'Caddy web server' caddy && \
     install -d -m 0750 -o caddy -g caddy /var/lib/caddy
 
-    # Install sqlite3 from source as the version in the remi repo is outdated
-RUN microdnf install -y gcc make wget tar && \
-    cd /tmp && \
-    wget https://www.sqlite.org/2025/sqlite-autoconf-3490100.tar.gz && \
-    tar xzf sqlite-autoconf-3490100.tar.gz && \
-    cd sqlite-autoconf-3490100 && \
-    ./configure --prefix=/usr/local && \
-    make -j $(nproc) && \
-    make install && \
-    cd .. && rm -rf sqlite-autoconf-3490100*
 
 
 # Install any required dependencies for the container to operate
@@ -76,6 +66,17 @@ RUN \
     cp .env.example .env && \
     composer install --no-dev --optimize-autoloader && \
     chown -R caddy:caddy *;
+
+# Install sqlite3 from source as the version in the remi repo is outdated
+RUN microdnf install -y gcc make wget tar && \
+    cd /tmp && \
+    wget https://www.sqlite.org/2025/sqlite-autoconf-3490100.tar.gz && \
+    tar xzf sqlite-autoconf-3490100.tar.gz && \
+    cd sqlite-autoconf-3490100 && \
+    ./configure --prefix=/usr/local && \
+    make -j $(nproc) && \
+    make install && \
+    cd .. && rm -rf sqlite-autoconf-3490100*
 
 RUN \
     yarn install --production && \
