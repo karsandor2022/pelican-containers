@@ -62,7 +62,7 @@ RUN \
     rm .git -rf && \
     chmod -R 755 storage/* bootstrap/cache && \
     find storage -type d > .storage.tmpl && \
-    curl -sS https://getcomposer.org/installer | php8.3 -- --install-dir=/usr/local/bin --filename=composer && \
+    curl -sS https://getcomposer.org/installer | php8 -- --install-dir=/usr/local/bin --filename=composer && \
     cp .env.example .env && \
     composer install --no-dev --optimize-autoloader && \
     chown -R caddy:caddy *;
