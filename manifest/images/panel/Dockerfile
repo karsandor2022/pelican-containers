@@ -5,6 +5,7 @@ LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.3
 ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysql,opcache,zip,process,soap,sodium,xml,zstd,sqlite3
+ENV TINI_VERSION v0.19.0
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -35,6 +36,8 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod +x /usr/bin/tini
 RUN chmod 755 /entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
