@@ -15,14 +15,14 @@ RUN microdnf install -y shadow-utils tzdata && \
 
 # Install sqlite3 from source as the version in the remi repo is outdated
 RUN microdnf install -y gcc make wget tar && \
-    wget https://www.sqlite.org/2025/sqlite-autoconf-3490100.tar.gz && \
     cd /tmp && \
-    tar xzf sqlite-autoconf-3490100.tar.gz && \
-    cd sqlite-autoconf-3490100 && \
+    wget https://www.sqlite.org/2023/sqlite-autoconf-3390200.tar.gz && \
+    tar xzf sqlite-autoconf-3390200.tar.gz && \
+    cd sqlite-autoconf-3390200 && \
     ./configure --prefix=/usr/local && \
-    make -j $(nproc) && \
+    make && \
     make install && \
-    cd .. && rm -rf sqlite-autoconf-3490100*
+    cd .. && rm -rf sqlite-autoconf-3390200*
 
 
 # Install any required dependencies for the container to operate
