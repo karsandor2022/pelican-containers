@@ -81,7 +81,7 @@ RUN \
 RUN \
     yarn install --production && \
     yarn add cross-env && \
-    yarn run build:production && \
+    yarn run && \
     rm -rf node_modules
 
 
