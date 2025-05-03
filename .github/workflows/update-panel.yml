@@ -38,5 +38,5 @@ jobs:
         build-args: VERSION=${{ steps.read_version.outputs.version }}
         push: true
         tags: |
-          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PANEL_PROJECT_NAME }}:latest"
-          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PANEL_PROJECT_NAME }}:${{ steps.read_version.outputs.version }}"
+          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PANEL_PROJECT_NAME }}:latest_RHEL9"
+          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PANEL_PROJECT_NAME }}:${{ steps.read_version.outputs.version }}_RHEL9"
