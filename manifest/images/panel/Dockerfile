@@ -39,7 +39,7 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
 
 
 #Copy contents to root directory
-COPY ./root/ /
+COPY ./root /
 
 
 # Export a persistent volume for caddy to store persistent data
