@@ -43,7 +43,7 @@ COPY ./root/ /
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
-ENTRYPOINT [ "/usr/bin/tini", "--", "./entrypoint.sh" ]
+ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
 # Export a persistent volume for caddy to store persistent data
