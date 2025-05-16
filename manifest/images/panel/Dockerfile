@@ -41,17 +41,15 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
 #Copy contents to root directory
 COPY ./root/ /
 
+# Let tini execute /entrypoint. This allows proper reaping of processes
+#USER caddy
+ENTRYPOINT [ "/usr/bin/tini", "--", "./entrypoint.sh" ]
+CMD [ "start-web" ]
+
 # Export a persistent volume for caddy to store persistent data
 VOLUME [ "/var/lib/caddy" ]
 
 WORKDIR /var/www/html
-
-# Let tini execute /entrypoint. This allows proper reaping of processes
-#USER caddy
-RUN ls 
-ENTRYPOINT [ "/usr/bin/tini", "--", "./entrypoint.sh" ]
-CMD [ "start-web" ]
-
 # Build phase of the container
 # This is where composer is added and pelican properly setup
 FROM base AS build
