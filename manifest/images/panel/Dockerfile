@@ -36,8 +36,6 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
     microdnf clean all && \
     pip3 cache purge
 
-
-
 #Copy contents to root directory
 COPY ./root/ /
 
@@ -48,7 +46,6 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
-RUN ls
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
@@ -81,7 +78,7 @@ RUN \
 RUN \
     yarn install --production && \
     yarn add cross-env && \
-    yarn run && \
+    yarn run build:production && \
     rm -rf node_modules
 
 
@@ -102,6 +99,4 @@ RUN \
     ln -s /data/storage storage; \
     ln -s /data/pelican.conf .env; 
     
-EXPOSE 80
-
 VOLUME [ "/data" ]
