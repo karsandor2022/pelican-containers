@@ -24,7 +24,6 @@ RUN microdnf install -y gcc make wget tar && \
     make install && \
     cd .. && rm -rf sqlite-autoconf-3490100*
 
-
 # Install any required dependencies for the container to operate
 RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm && \
@@ -44,8 +43,10 @@ VOLUME [ "/var/lib/caddy" ]
 
 WORKDIR /var/www/html
 
+
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
+RUN chmod 755 /entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
@@ -78,7 +79,7 @@ RUN \
 RUN \
     yarn install --production && \
     yarn add cross-env && \
-    yarn run build:production && \
+    yarn run build && \
     rm -rf node_modules
 
 
