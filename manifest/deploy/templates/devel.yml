@@ -23,7 +23,7 @@ services:
   cron:
     command: p:cron
     env_file: ./conf.d/panel.env
-    image: thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
+    image: thecrafter22/pelican-panel:${PANEL_VERSION:-latest_RHEL9}
     profiles: [ panel ]
     restart: always
     volumes:
@@ -64,7 +64,7 @@ services:
         VERSION: ${PANEL_VERSION}
       context: ./manifest/images/panel
     env_file: ./conf.d/panel.env
-    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest_RHEL9}
     ports:
       - 80:80
       - 443:443
@@ -81,7 +81,7 @@ services:
   worker:
     command: p:worker
     env_file: ./conf.d/panel.env
-    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
+    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest_RHEL9}
     profiles: [ panel ]
     restart: always
     volumes:
