@@ -6,7 +6,6 @@ LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 ENV PHP_VERSION=8.3
 ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysql,opcache,zip,process,soap,sodium,xml,zstd,sqlite3
 ENV EXTRA_PACKAGES="nmap-ncat mariadb"
-ENV TINI_VERSION=v0.19.0
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -18,9 +17,7 @@ RUN microdnf install -y shadow-utils tzdata && \
 RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm && \
     rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
-    microdnf install -y python3 python3-pip  && \
-    microdnf module enable -y php:remi-${PHP_VERSION} && \
-    pip3 install tini && \
+    microdnf module enable -y php:remi-${PHP_VERSION} nodejs:20 && \
     eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
         python3 python3-pip tini ${EXTRA_PACKAGES} && \
     pip3 install yacron && \
@@ -70,7 +67,7 @@ RUN \
 RUN \
     yarn install --production && \
     yarn add cross-env && \
-    yarn run && \
+    yarn run build:production && \
     rm -rf node_modules
 
 
