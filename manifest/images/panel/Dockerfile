@@ -17,7 +17,9 @@ RUN microdnf install -y shadow-utils tzdata && \
 RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm && \
     rpm --install https://rpms.remirepo.net/enterprise/remi-release-10.rpm && \
     curl -Lo /etc/yum.repos.d/caddy.repo https://copr.fedorainfracloud.org/coprs/g/caddy/caddy/repo/epel-10/group_caddy-caddy-epel-10.repo && \
+    microdnf install -y python3 python3-pip  && \
     microdnf module enable -y php:remi-${PHP_VERSION} && \
+    pip3 install tini && \
     eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
         python3 python3-pip tini ${EXTRA_PACKAGES} && \
     pip3 install yacron && \
@@ -35,7 +37,9 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
-RUN chmod -R 777 ./entrypoint.sh
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+RUN chmod 777 /usr/bin/tini
+RUN chmod -R 777 /entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
@@ -67,7 +71,7 @@ RUN \
 RUN \
     yarn install --production && \
     yarn add cross-env && \
-    yarn run build:production && \
+    yarn run && \
     rm -rf node_modules
 
 
