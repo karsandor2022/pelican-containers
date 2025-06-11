@@ -38,7 +38,7 @@ WORKDIR /var/www/html
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 RUN chmod 777 /usr/bin/tini
 RUN chmod -R 777 /entrypoint.sh
-ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
+ENTRYPOINT [ "/usr/bin/tini", "--", "bash", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
 # Build phase of the container
