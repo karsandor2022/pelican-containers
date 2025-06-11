@@ -1,11 +1,12 @@
-FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:10-kitten-minimal AS base
+FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:10-minimal AS base
 
 LABEL maintainer="Cameron Carney <ccarney@zyphi.co>"
 
 # Allows the end user to customize what php modules and packages they want on buildtime
 ENV PHP_VERSION=8.3
 ENV PHP_MODULES=bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysql,opcache,zip,process,soap,sodium,xml,zstd,sqlite3
-ENV TINI_VERSION v0.19.0
+ENV EXTRA_PACKAGES="nmap-ncat mariadb"
+ENV TINI_VERSION=v0.19.0
 
 # Create the Caddy group and user with ID 500
 RUN microdnf install -y shadow-utils tzdata && \
@@ -20,7 +21,8 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.n
     microdnf install -y python3 python3-pip  && \
     microdnf module enable -y php:remi-${PHP_VERSION} && \
     pip3 install tini && \
-    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} && \
+    eval microdnf install -y ca-certificates caddy php-{$PHP_MODULES} \
+        python3 python3-pip tini ${EXTRA_PACKAGES} && \
     pip3 install yacron && \
     microdnf clean all && \
     pip3 cache purge
@@ -36,9 +38,7 @@ WORKDIR /var/www/html
 
 # Let tini execute /entrypoint. This allows proper reaping of processes
 #USER caddy
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
-RUN chmod 755 /entrypoint.sh
+RUN chmod -R 777 ./entrypoint.sh
 ENTRYPOINT [ "/usr/bin/tini", "--", "/entrypoint.sh" ]
 CMD [ "start-web" ]
 
