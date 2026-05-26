@@ -3,7 +3,7 @@ name: Update Wings Image
 on:
   workflow_dispatch:
 env:
-    DAEMON_PROJECT_NAME: pterodactyl-daemon
+    WINGS_PROJECT_NAME: pelican-wings
 jobs:
   build_push_wings:
     name: Build and Push Wings Container
@@ -15,7 +15,7 @@ jobs:
     - name: Read Version
       id: read_version
       run: |
-        echo "::set-output name=version::$(grep -Po "DAEMON_VERSION=\K[^ ]+" ./manifest/version.txt)"
+        echo "::set-output name=version::$(grep -Po "WINGS_VERSION=\K[^ ]+" ./manifest/version.txt)"
         
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -38,5 +38,5 @@ jobs:
         push: true
         build-args: VERSION=${{ steps.read_version.outputs.version }}
         tags: |
-          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DAEMON_PROJECT_NAME }}:latest"
-          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DAEMON_PROJECT_NAME }}:${{ steps.read_version.outputs.version }}"
+          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.WINGS_PROJECT_NAME }}:latest"
+          "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.WINGS_PROJECT_NAME }}:${{ steps.read_version.outputs.version }}"
