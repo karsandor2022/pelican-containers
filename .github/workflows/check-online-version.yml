@@ -4,7 +4,7 @@ on:
   schedule:
   - cron: "0 0 * * *"
 env:
-  PANEL_PROJECT_NAME: pterodactyl-panel # Dockerhub project
+  PANEL_PROJECT_NAME: pterodactyl-panel
   DAEMON_PROJECT_NAME: pterodactyl-daemon
 jobs:
   get_versions:
@@ -19,16 +19,20 @@ jobs:
     - name: Get Current Release
       id: latest_versions
       run: |
-        latest_info="$(curl -s "https://cdn.pterodactyl.io/releases/latest.json")"
-        echo "::set-output name=panel_version::v$(echo $latest_info | jq -r '.panel')"
-        echo "::set-output name=daemon_version::v$(echo $latest_info | jq -r '.wings')"
-                
+        panel_version="$(curl -s "https://api.github.com/repos/pelican-dev/panel/releases/latest" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          | jq -r '.tag_name')"
+        daemon_version="$(curl -s "https://api.github.com/repos/pelican-dev/wings/releases/latest" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          | jq -r '.tag_name')"
+        echo "::set-output name=panel_version::${panel_version}"
+        echo "::set-output name=daemon_version::${daemon_version}"
+
     - name: Get Panel Docker version
       uses: luoqiz/docker-images-latest-version@master
       id: panel_docker_version
       with:
         image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PANEL_PROJECT_NAME }}
-
     - name: Get Daemon Docker version
       uses: luoqiz/docker-images-latest-version@master
       id: daemon_docker_version
@@ -48,7 +52,7 @@ jobs:
         echo -e "PANEL_VERSION=${{ needs.get_versions.outputs.latest_panel_version }}\nDAEMON_VERSION=${{ needs.get_versions.outputs.latest_daemon_version }}" > ./manifest/version.txt
         git commit -a -m "updated version.txt."
         git push
-  
+
   request_daemon_build:
     name: Request Daemon Build
     runs-on: ubuntu-latest
