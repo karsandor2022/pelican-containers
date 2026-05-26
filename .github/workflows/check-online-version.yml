@@ -58,9 +58,7 @@ jobs:
     needs:
     - get_versions
     - update-version-txt
-    if: |
-      needs.update-version-txt.result == 'success' &&
-      needs.get_versions.outputs.latest_wings_version != needs.get_versions.outputs.current_wings_version
+    if: needs.update-version-txt.result == 'success' && needs.get_versions.outputs.latest_wings_version != needs.get_versions.outputs.current_wings_version
     steps:
     - uses: convictional/trigger-workflow-and-wait@v1.3.0
       with:
@@ -78,9 +76,7 @@ jobs:
     needs:
     - get_versions
     - update-version-txt
-    if: |
-      needs.update-version-txt.result == 'success' &&
-      needs.get_versions.outputs.latest_panel_version != needs.get_versions.outputs.current_panel_version
+    if: needs.update-version-txt.result == 'success' && needs.get_versions.outputs.latest_panel_version != needs.get_versions.outputs.current_panel_version
     steps:
     - uses: convictional/trigger-workflow-and-wait@v1.3.0
       with:
