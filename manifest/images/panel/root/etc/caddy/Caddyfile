@@ -1,0 +1,27 @@
+# Base configuration for caddy
+# This configuration offers as a base in which
+# to import the configuration via /etc/caddy/Caddyfile.d
+{
+    admin off
+    storage file_system { 
+        root /var/lib/caddy
+    }
+    log default {
+        format filter {
+            fields {
+                request>remote_port delete
+                request>headers delete
+                resp_headers delete
+            }
+            wrap console {
+                time_format rfc3339
+            }
+        }
+        output {$CADDY_ACCESSLOG_OUTPUT:stdout}
+    }
+    servers {
+        {$CADDY_TRUSTED_PROXIES}
+    }
+}
+
+import Caddyfile.d/*.caddyfile

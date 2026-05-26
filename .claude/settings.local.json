@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(gh api *)",
+      "PowerShell(gh api repos/pelican-dev/panel/contents/.env.example --jq '.content' | ForEach-Object { [System.Text.Encoding]::UTF8.GetString\\([System.Convert]::FromBase64String\\($_\\)\\) })",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s https://raw.githubusercontent.com/pelican-dev/panel/main/.env.example)",
+      "Bash(curl -s https://raw.githubusercontent.com/pelican-dev/panel/main/config/database.php)",
+      "Bash(curl -s https://raw.githubusercontent.com/pelican-dev/panel/main/config/cache.php)",
+      "Bash(curl -s https://raw.githubusercontent.com/pelican-dev/panel/main/config/queue.php)",
+      "Bash(curl -s https://api.github.com/repos/pelican-dev/panel/contents/config)",
+      "WebFetch(domain:pelican.dev)",
+      "Bash(curl -s \"https://pelican.dev/docs/panel/getting-started\")",
+      "Bash(curl -s \"https://pelican.dev/docs/panel/webserver-config\")",
+      "Bash(curl -s \"https://pelican.dev/docs/panel/panel-setup\")",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/pelican-dev/panel/main/package.json\")",
+      "Bash(curl -s \"https://api.github.com/repos/pelican-dev/panel/releases/latest\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/pelican-dev/panel/main/.env.example\")",
+      "Bash(rm \"c:\\\\Users\\\\karsa\\\\source\\\\repos\\\\karsandor2022\\\\pelican-containers\\\\manifest\\\\images\\\\panel\\\\root\\\\etc\\\\caddy\\\\Caddyfile.d\\\\pterodactyl.caddyfile\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\karsa\\source\\repos\\karsandor2022\\pelican-containers\\manifest\\images\\panel\\root\\etc\\caddy\\Caddyfile.d"
+    ]
+  }
+}

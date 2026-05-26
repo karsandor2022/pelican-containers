@@ -1,0 +1,118 @@
+###
+# Default Configuration File
+#
+# Easiest and most straight forward way to deploy Pelican.
+# Contains everything needed to get up and running.
+#
+###
+services:
+  ##
+  # -- Let's Encrypt Certbot --
+  ##
+  certbot:
+    command: renew
+    image: docker.io/certbot/certbot:latest
+    profiles: [ letsencrypt ]
+    volumes:
+      - ./conf.d/letsencrypt:/etc/letsencrypt:z
+      - ./conf.d/letsencrypt/webroot/.well-known:/var/www/html/public/.well-known:z
+
+  ##
+  # -- Panel Cron --
+  # These are required for schedules and other misc tasks to 
+  # function correctly.
+  ##
+  cron:
+    command: p:cron
+    extends:
+      service: panel
+    ports: !reset
+ 
+  ##
+  # -- Pelican Wings --
+  # This service provides the wings runtime.
+  ##
+  wings:
+    environment:
+      - TZ=${WINGS_TIMEZONE:-UTC}
+    image: docker.io/thecrafter22/pelican-wings:${WINGS_VERSION:-latest}
+    ports:
+      - 2022:2022
+      - 8080:8080
+    privileged: true
+    profiles: [ wings ]
+    restart: always
+    volumes:
+      - ${WINGS_DATA_DIRECTORY:-/var/lib/pelican}:${WINGS_DATA_DIRECTORY:-/var/lib/pelican}
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+      - /tmp/pelican:/tmp/pelican:z
+      - /run/wings:/run/wings:z
+      - ./conf.d/wings:/etc/pelican:z
+      - ./conf.d/letsencrypt:/etc/letsencrypt:ro,z
+      - ./conf.d/certs:/etc/certs:ro,z
+    working_dir: ${WINGS_DATA_DIRECTORY:-/var/lib/pelican}
+
+  ##
+  # -- MariaDB --
+  # Required for the control panel to work.
+  # Stores Server/User information
+  ##
+  mariadb:
+    image: docker.io/library/mariadb:10.11
+    env_file: ./conf.d/mariadb.env
+    networks:
+      default:
+        aliases:
+          - mysql
+    profiles: [ panel ]
+    restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql:z
+
+  ##
+  # -- Pelican Panel --
+  # This is the container that provides the main web interface.
+  ##
+  panel:
+    env_file: ./conf.d/panel.env
+    image: docker.io/thecrafter22/pelican-panel:${PANEL_VERSION:-latest}
+    ports:
+      - 80:80
+      - 443:443
+    profiles: [ panel ]
+    restart: always
+    volumes:
+      - ./data/panel:/data:z
+      - ./conf.d/letsencrypt:/etc/letsencrypt:z
+      - ./conf.d/letsencrypt/webroot/.well-known:/var/www/html/public/.well-known:z
+      - ./conf.d/certs:/etc/certs:z
+    depends_on:
+      mariadb:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  ##
+  # -- Redis --
+  ##
+  redis:
+    cpu_count: 2
+    cpu_percent: 50
+    image: docker.io/library/redis:alpine
+    mem_limit: 128m
+    networks:
+      default:
+        aliases:
+          - cache
+    profiles: [ panel ]
+    restart: always
+
+  ##
+  # -- Panel Worker --
+  ##
+  worker:
+    command: p:worker
+    extends:
+      service: panel
+    ports: !reset
+

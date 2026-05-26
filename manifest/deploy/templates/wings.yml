@@ -1,0 +1,40 @@
+###
+# Wings Configuration File
+#
+# This config only provides the wings and certbot.
+# Meant for multi machine network where a panel is already established.
+###
+services:
+  ##
+  # -- Let's Encrypt Certbot --
+  ##
+  certbot:
+    command: renew
+    image: docker.io/certbot/certbot:latest
+    profiles: [ letsencrypt ]
+    volumes:
+      - ./conf.d/letsencrypt:/etc/letsencrypt
+      - ./conf.d/letsencrypt/webroot/.well-known:/var/www/html/public/.well-known
+  ##
+  # -- Pelican Wings --
+  # This service provides the wings runtime.
+  ##
+  wings:
+    environment:
+      - TZ=${WINGS_TIMEZONE:-UTC}
+    image: docker.io/thecrafter22/pelican-wings:${WINGS_VERSION:-latest}
+    ports:
+      - 2022:2022
+      - 8080:8080
+    privileged: true
+    profiles: [ wings ]
+    restart: always
+    volumes:
+      - ${WINGS_DATA_DIRECTORY:-/var/lib/pelican}:${WINGS_DATA_DIRECTORY:-/var/lib/pelican}:z
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock
+      - /tmp/pelican:/tmp/pelican:z
+      - /run/wings:/run/wings:z
+      - ./conf.d/wings:/etc/pelican:z
+      - ./conf.d/letsencrypt:/etc/letsencrypt:ro,z
+      - ./conf.d/certs:/etc/certs:ro,z
+    working_dir: ${WINGS_DATA_DIRECTORY:-/var/lib/pelican}
