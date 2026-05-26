@@ -15,7 +15,7 @@ jobs:
     - name: Read Version
       id: read_version
       run: |
-        echo "::set-output name=version::$(grep -Po "WINGS_VERSION=\K[^ ]+" ./manifest/version.txt)"
+        echo "version=$(grep -Po "WINGS_VERSION=\K[^ ]+" ./manifest/version.txt)" >> $GITHUB_OUTPUT
         
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -29,11 +29,11 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and Push
+    - name: Build and push
       uses: docker/build-push-action@v5
       with:
-        context: ./manifest/images/daemon
-        file: ./manifest/images/daemon/Dockerfile
+        context: ./manifest/images/wings
+        file: ./manifest/images/wings/Dockerfile
         platforms: linux/amd64
         push: true
         build-args: VERSION=${{ steps.read_version.outputs.version }}

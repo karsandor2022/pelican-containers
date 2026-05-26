@@ -15,7 +15,7 @@ jobs:
     - name: Read Version
       id: read_version
       run: |
-        echo "::set-output name=version::$(grep -Po "PANEL_VERSION=\K[^ ]+" ./manifest/version.txt)"
+        echo "version=$(grep -Po "PANEL_VERSION=\K[^ ]+" ./manifest/version.txt)" >> $GITHUB_OUTPUT
         
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
