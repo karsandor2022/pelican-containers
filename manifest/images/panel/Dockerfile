@@ -3,7 +3,8 @@ FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS s
 ARG SQLITE_VERSION=3530100
 ARG SQLITE_YEAR=2026
 
-RUN microdnf install -y gcc make curl tar gzip
+RUN microdnf install -y gcc make tar gzip && \
+    microdnf swap -y curl-minimal curl
 
 RUN curl -Lo /tmp/sqlite.tar.gz \
         "https://www.sqlite.org/${SQLITE_YEAR}/sqlite-autoconf-${SQLITE_VERSION}.tar.gz" && \
@@ -19,7 +20,8 @@ RUN curl -Lo /tmp/sqlite.tar.gz \
             -DSQLITE_ENABLE_LOAD_EXTENSION" \
     ./configure --prefix=/usr/local && \
     make -j$(nproc) && \
-    make install
+    make install && \
+    rm -rf /tmp/sqlite.tar.gz /tmp/sqlite-src
 
 
 FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS base
@@ -50,8 +52,12 @@ RUN rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.no
 
 # Replace system SQLite with the version built from source
 COPY --from=sqlite-build /usr/local/bin/sqlite3 /usr/local/bin/sqlite3
+COPY --from=sqlite-build /usr/local/include/sqlite3.h /usr/local/include/sqlite3.h
+COPY --from=sqlite-build /usr/local/include/sqlite3ext.h /usr/local/include/sqlite3ext.h
 COPY --from=sqlite-build /usr/local/lib/ /tmp/sqlite-lib/
-RUN cp -P /tmp/sqlite-lib/libsqlite3.so* /usr/lib64/ && \
+RUN cp -P /tmp/sqlite-lib/libsqlite3.so* /usr/local/lib/ && \
+    cp /tmp/sqlite-lib/libsqlite3.a /usr/local/lib/ && \
+    echo "/usr/local/lib" > /etc/ld.so.conf.d/00-local.conf && \
     ldconfig && \
     rm -rf /tmp/sqlite-lib
 
