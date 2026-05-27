@@ -3,8 +3,7 @@ FROM --platform=$TARGETOS/$TARGETARCH docker.io/library/almalinux:9-minimal AS s
 ARG SQLITE_VERSION=3530100
 ARG SQLITE_YEAR=2026
 
-RUN microdnf install -y gcc make tar gzip && \
-    microdnf swap -y curl-minimal curl
+RUN microdnf install -y gcc make tar gzip
 
 RUN curl -Lo /tmp/sqlite.tar.gz \
         "https://www.sqlite.org/${SQLITE_YEAR}/sqlite-autoconf-${SQLITE_VERSION}.tar.gz" && \
