@@ -98,7 +98,7 @@ RUN \
     chown -R caddy:caddy *;
 
 RUN \
-    npm install --force && \
+    npm install --legacy-peer-deps && \
     npm run build && \
     rm -rf node_modules
 
