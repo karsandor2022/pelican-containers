@@ -4,8 +4,11 @@ cat .storage.tmpl | while read line; do
     mkdir -p "/data/${line}"
 done
 
+FRESH_INSTALL=false
+
 # Generate config file if it doesnt exist
 if [ ! -e /data/pelican.conf ]; then
+    FRESH_INSTALL=true
     printf "\n[pelican-init] Generating Application Key...\n"
 
     # Generate base template
@@ -31,10 +34,13 @@ if [ ! -e /data/pelican.conf ]; then
 fi
 
 printf "\n[pelican-init] Clearing cache/views...\n"
-    
+
 php artisan view:clear
 php artisan config:clear
 
-printf "\n[pelican-init] Migrating/Seeding database...\n"
-
-php artisan migrate --seed --force
+if [ "$FRESH_INSTALL" = "true" ]; then
+    printf "\n[pelican-init] Fresh install detected - complete setup via the web installer at /installer\n"
+else
+    printf "\n[pelican-init] Migrating/Seeding database...\n"
+    php artisan migrate --seed --force
+fi
