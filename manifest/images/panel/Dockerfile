@@ -85,7 +85,7 @@ ENV VERSION=${VERSION}
 #USER root
 
 RUN \
-    microdnf install -y findutils git nodejs
+    microdnf install -y findutils git nodejs npm
 
 RUN \
     git clone https://github.com/pelican-dev/panel ./ --depth 1 --branch ${GIT_BRANCH} && \
