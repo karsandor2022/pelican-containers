@@ -18,7 +18,8 @@
       "Bash(curl -s \"https://raw.githubusercontent.com/pelican-dev/panel/main/package.json\")",
       "Bash(curl -s \"https://api.github.com/repos/pelican-dev/panel/releases/latest\")",
       "Bash(curl -s \"https://raw.githubusercontent.com/pelican-dev/panel/main/.env.example\")",
-      "Bash(rm \"c:\\\\Users\\\\karsa\\\\source\\\\repos\\\\karsandor2022\\\\pelican-containers\\\\manifest\\\\images\\\\panel\\\\root\\\\etc\\\\caddy\\\\Caddyfile.d\\\\pterodactyl.caddyfile\")"
+      "Bash(rm \"c:\\\\Users\\\\karsa\\\\source\\\\repos\\\\karsandor2022\\\\pelican-containers\\\\manifest\\\\images\\\\panel\\\\root\\\\etc\\\\caddy\\\\Caddyfile.d\\\\pterodactyl.caddyfile\")",
+      "Bash(git -C \"c:\\\\Users\\\\karsa\\\\source\\\\repos\\\\karsandor2022\\\\pelican-containers\" ls-files --format \"%\\(objectmode\\) %\\(path\\)\" manifest/images/panel/root/entrypoint.sh manifest/images/panel/root/entrypoint.init.sh manifest/images/panel/root/entrypoint.d/ manifest/images/panel/root/usr/local/bin/)"
     ],
     "additionalDirectories": [
       "c:\\Users\\karsa\\source\\repos\\karsandor2022\\pelican-containers\\manifest\\images\\panel\\root\\etc\\caddy\\Caddyfile.d"

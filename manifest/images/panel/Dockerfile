@@ -62,6 +62,7 @@ RUN cp -P /tmp/sqlite-lib/libsqlite3.so* /usr/local/lib/ && \
 
 # Copy contents to root directory
 COPY ./root/ /
+RUN chmod +x /entrypoint.sh /entrypoint.init.sh /entrypoint.d/*.sh /usr/local/bin/p_cron /usr/local/bin/p_worker /usr/local/bin/wait-for
 
 # Export a persistent volume for caddy to store persistent data
 VOLUME [ "/var/lib/caddy" ]
