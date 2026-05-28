@@ -3,6 +3,7 @@
 cat .storage.tmpl | while read line; do
     mkdir -p "/data/${line}"
 done
+chmod -R 755 /data/storage
 
 FRESH_INSTALL=false
 

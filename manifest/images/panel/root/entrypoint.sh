@@ -62,6 +62,7 @@ fi
 # This is set to maintain compatibility with existing installations that ran mainly as root.
 if [ "$user_id" = "0" ]; then
     chown --dereference caddy "/proc/$$/fd/1" "/proc/$$/fd/2"
+    chown -R caddy:caddy /data
     exec runuser --user caddy -- "$BASH_SOURCE" "$@"
 fi
 
