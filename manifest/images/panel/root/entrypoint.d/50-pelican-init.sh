@@ -22,6 +22,7 @@ if [ ! -e /data/pelican.conf ]; then
     echo "##" >> /data/pelican.conf
     echo "" >> /data/pelican.conf
     echo "APP_KEY=SomeRandomString3232RandomString" >> /data/pelican.conf
+    echo "APP_INSTALLED=false" >> /data/pelican.conf
     echo "" >> /data/pelican.conf
     echo "HASHIDS_SALT=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 20)" >> /data/pelican.conf
     echo "HASHIDS_LENGTH=8" >> /data/pelican.conf
@@ -39,9 +40,7 @@ php artisan view:clear
 php artisan config:clear
 
 if [ "$FRESH_INSTALL" = "true" ]; then
-    printf "\n[pelican-init] Fresh install detected - running initial migrations...\n"
-    php artisan migrate --force
-    printf "[pelican-init] Complete setup via the web installer at /installer\n"
+    printf "\n[pelican-init] Fresh install detected - complete setup via the web installer at /installer\n"
 else
     printf "\n[pelican-init] Migrating/Seeding database...\n"
     php artisan migrate --seed --force
