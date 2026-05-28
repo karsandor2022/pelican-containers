@@ -33,6 +33,7 @@ function start_server {
     # Run these as jobs and monitor their pid status
     /usr/sbin/php-fpm --nodaemonize --pid /var/lib/caddy/.php-fpm.pid & php_service_pid=$!
     /usr/bin/caddy run --pidfile /var/lib/caddy/.caddy.pid --config /etc/caddy/Caddyfile & caddy_service_pid=$!
+    yacron -c /etc/yacron/yacron.yaml & yacron_service_pid=$!
 
     # Monitor Child Processes
     while ( true ); do
@@ -45,6 +46,11 @@ function start_server {
             echo "[caddy] service is no longer running! exiting..."
             sleep 1
             exit 2
+        fi
+        if ! kill -0 "$yacron_service_pid" 2>/dev/null; then
+            echo "[yacron] service is no longer running! exiting..."
+            sleep 1
+            exit 3
         fi
         sleep 5
     done;
