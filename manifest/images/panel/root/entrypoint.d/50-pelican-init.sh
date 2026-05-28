@@ -43,6 +43,6 @@ php artisan config:clear
 if [ "$FRESH_INSTALL" = "true" ]; then
     printf "\n[pelican-init] Fresh install detected - complete setup via the web installer at /installer\n"
 else
-    printf "\n[pelican-init] Migrating/Seeding database...\n"
-    php artisan migrate --seed --force
+    printf "\n[pelican-init] Migrating database...\n"
+    php artisan migrate --force
 fi
