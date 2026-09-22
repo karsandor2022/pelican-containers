@@ -1,7 +1,7 @@
 name: "Check Online Version"
 on:
   workflow_dispatch:
-  schedule:
+  schedule: 
   - cron: "0 0 * * *"
 env:
   PANEL_PROJECT_NAME: pelican-panel
@@ -19,9 +19,9 @@ jobs:
     - name: Get Current Release
       id: latest_versions
       run: |
-        curl -s "https://api.github.com/repos/pelican-dev/panel/releases/latest" \
+        curl -s "https://api.github.com/repos/pelican/panel/releases/latest" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" | jq -r '.tag_name' > /tmp/panel_ver &
-        curl -s "https://api.github.com/repos/pelican-dev/wings/releases/latest" \
+        curl -s "https://api.github.com/repos/pelican/wings/releases/latest" \
           -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" | jq -r '.tag_name' > /tmp/wings_ver &
         wait
         echo "panel_version=$(cat /tmp/panel_ver)" >> $GITHUB_OUTPUT
